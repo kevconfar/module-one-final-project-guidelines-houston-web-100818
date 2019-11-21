@@ -17,7 +17,7 @@ end
 Haunt.all.each do |haunt|
     arr = []
     activities.each do |key, value|
-        desc = haunt.description
+        desc = haunt.descriptione
         descrip = desc.split(/\W+/)
         matches = descrip & value
         if matches.length > 0
