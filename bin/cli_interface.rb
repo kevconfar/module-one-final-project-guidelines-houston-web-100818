@@ -56,10 +56,10 @@ def move_on(name)
     move_on = $prompt.select(messages(name)[:move_on], response_choices[:move_on_choices])
 end
 
-  def exit?
+def exit?
     puts messages[:exit]
     exit
-  end
+end
   
 def continue_message
     move_on_again = $prompt.select(messages[:move_on_again], response_choices[:move_on_again_choices])
@@ -86,21 +86,18 @@ def launch_first_menu(name=nil)
             Haunt.all.collect. do |haunt|
                 options.choice haunt.name
             end
-            haunt_choice = Haunt.find_by(name: haunt_name)#.haunts.order("name")
-            haunt_search_printer(haunt_name)
-            launch_first_menu
         end
+        haunt_choice = Haunt.find_by(name: haunt_name)#.haunts.order("name")
+        review_printer(haunt_choice)
+        launch_first_menu
     when 1
         location_name = $prompt.select(messages[:location_search], filter: true) do |options|
             testing = Haunt.all.where( state: "#{location_name}") do |haunt|
                 options.choice haunt.name
             end
-            location_choice = testing
-            review_printer(location_choice)
-            launch_first_menu
         end
-        location_choice = find_by_state(input)
-        location_search_printer(location_name)
+        location_choice = testing
+        review_printer(location_choice)
         launch_first_menu
     when 2
         type_of_haunting_choice = launch_menu($type_of_haunting_menu_choices, messages[:type_of_haunting])
@@ -123,89 +120,113 @@ end
 
 
 
-  def launch_type_of_haunting_menu(type_of_haunting_choice)
-      case type_of_haunting_choice
-      when 0
+def launch_type_of_haunting_menu(type_of_haunting_choice)
+    id_arr = []
+    testing = ""
+    case type_of_haunting_choice
+    when 0
         visual_type = $prompt.select(messages[:type_of_haunting], filter: true) do |options|
+            # id_arr = []
             Paranormal_Experience.all.collect do |exp|
-                id_arr = []
                 if exp.experience.include? "#{visual_type}"
-                    id_arr << exp.id
+                    id_arr << exp.id.to_i
                 end
             end
-
-
-
-                Haunt.all.where()
-            description.each do |word|
-              if word.includes?("orbs") || word.includes?("shadow") || word.includes?("figure") || word.includes?("lights") || word.includes?("items moving") || word.includes?("apparition")
-                options.choice visual.description
-         # Haunt.all.collect do |description|
-          #  options.choice description.visual
-              end
+            testing = id_arr.each do |id_num|
+                Haunt.all.where(id: "#{id_num}") do |haunt|
+                    options.choice haunt.name
+                end 
             end
-      
-        visual_choice = Paranormal_Experience.find_by(description: visual_type).haunts.order("name")
-        visual_haunting_printer(visual_type) 
+        end
+        visual_choice = Haunt.find_by(name: "#{testing}")#.haunts.order("name")
+        # visual_haunting_printer(visual_type) 
+        review_printer(visual_choice)
         launch_first_menu
-      when 1
+    when 1
         auditory_haunting_printer(Paranormal_Experience.type_of_haunting_hash)
         launch_first_menu
-      when 2
+    when 2
         physical_haunting_printer(Paranormal_Experience.type_of_haunting_hash)
         launch_first_menu
-      when 3
+    when 3
         launch_first_menu
-      end
+    end 
+end
 
-  end
-
-  def physical_haunting_printer(type_of_haunting_hash)
-      type_of_haunting_hash.each do | physical |
+def physical_haunting_printer(type_of_haunting_hash)
+    type_of_haunting_hash.each do | physical |
         message = "\nName: #{haunt[:name]}\nPlace: #{haunt[:state]}\nReview:\n#{review[:review]}\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
         review_printer(message)
-      end
-  end
+    end
+end
 
   # def auditory_haunting_printer
   # end
   # def visual_haunting_printer
   # end
 
-  def haunt_search_printer(name)
+def haunt_search_printer(name)
     puts "\nHaunt: #{name}"
     Haunt.each do |haunt|
-      message = "\nCity:\n#{haunt.city},\nState:\n#{haunt.state},\nDescription:\n#{haunt.description}\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
-      review_printer(message)
+        message = "\nCity:\n#{haunt.city},\nState:\n#{haunt.state},\nDescription:\n#{haunt.description}\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
+        review_printer(message)
     end
-  end
+end
   
-  def location_search_printer(state)
+def location_search_printer(state)
     puts "\nState: #{state}"
     puts "\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
     Haunt.each do |haunt|
-      message = "\nName:\n#{haunt.name},\nCity:\n#{haunt.city},\nDescription:\n#{haunt.description}\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
-      review_printer(message)
+        message = "\nName:\n#{haunt.name},\nCity:\n#{haunt.city},\nDescription:\n#{haunt.description}\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
+        review_printer(message)
     end
-  end
+end
 
-  def review_printer(message)
+def review_printer(message)
     next_or_back = $prompt.select(message, response_choices[:next_or_back_choices])
     if next_or_back == "Back"
-      launch_first_menu
+        launch_first_menu
     end
-  end
+end
   
-  def run_program
+def run_program
     name = welcome_get_name
     yes_or_no = move_on(name)
-  
+
     if yes_or_no == "No"
-      exit?
+        exit?
     else
-      name = continue_message
-      launch_first_menu(name)
+        name = continue_message
+        launch_first_menu(name)
     end
-  end
-  
 end
+  
+# # end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
