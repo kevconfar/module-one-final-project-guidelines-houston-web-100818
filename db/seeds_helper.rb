@@ -21,17 +21,32 @@ def href_arr # creates an array of urls that will be plugged into the other meth
 end
 
 def state_name(state_href) # gets state name
-
   href = "#{state_href}"
 
   html = open("#{href}")
   doc = Nokogiri::HTML(html)
 
-  state = doc.css(".entry-title").text.split(" ").last
+  arr = doc.css(".entry-title").text.split(" ")
+  state = arr.last
+  
+  if state == "TX" 
+    state = "Texas"
+  elsif state == "D.C." || state == "Island" || state == "Dakota" || state == "State"
+    state = arr[-2..-1].join(" ")
+  elsif state == "Virginia"
+    if arr[-2] == "West"
+      state = "West Virginia"
+    else
+      state = "Virginia"
+    end
+  end
+
+  state
 end
 
+
 def haunt_info(state_href) # creates an array for each haunt with subarrays for its name and city
-  haunt_names = []
+    haunt_names = []
 
     href = "#{state_href}"
 
@@ -41,33 +56,33 @@ def haunt_info(state_href) # creates an array for each haunt with subarrays for 
     places = doc.css(".section-title-main")
 
     places.each do |index|
-      arr = []
-      haunt = index.text[3..-1]
-      haunt_names << haunt.split(", ")
+        arr = []
+        haunt = index.text[3..-1]
+        haunt_names << haunt.split(", ")
     end
-  
-  haunt_names[0..-2]
+
+    haunt_names[0..-2]
 end
 
 def descriptions(state_href) # creates an array of descriptions (each description is 1 index)
 
-  href = "#{state_href}"
+    href = "#{state_href}"
 
-  html = open("#{href}")
-  doc = Nokogiri::HTML(html)
+    html = open("#{href}")
+    doc = Nokogiri::HTML(html)
 
-  unparsed_info = doc.css(".page-inner p")
+    unparsed_info = doc.css(".page-inner p")
 
-  paragraph = ""
-  x = unparsed_info[3..-1]
-  x.each do |index|
-      description = index.text
-      if !description.empty?
-          paragraph << description
-      else
-          paragraph << "*"
-      end
-  end
+    paragraph = ""
+    x = unparsed_info[3..-1]
+    x.each do |index|
+        description = index.text
+        if !description.empty?
+            paragraph << description
+        else
+            paragraph << "*"
+        end
+    end
 
   h_description = paragraph.split("*")
   last = h_description.pop.split(".")
@@ -93,63 +108,55 @@ def haunt_hasher(state_href) # creates a hash of every haunt in a state
     state = state_name(href)
     about = descriptions(href)
         
-    info.each do |haunt|
+    info.each do |haunt| # Added .lstrip to Names to get rid of leading whitespace.
         if haunt.length == 3
             if !haunt_hash[state]
-                haunt_hash[state] = [{ :name => haunt[0].to_s, :city => haunt[1].to_s, :state => haunt[2].to_s, :description => about[info.index(haunt)].to_s }]
+                haunt_hash[state] = [{ :name => haunt[0].to_s.lstrip, :city => haunt[1].to_s, :state => state.to_s, :description => about[info.index(haunt)].to_s }]
                 
             else
-                haunt_hash[state] << { :name => haunt[0].to_s, :city => haunt[1].to_s, :state => haunt[2].to_s, :description => about[info.index(haunt)].to_s }
+                haunt_hash[state] << { :name => haunt[0].to_s.lstrip, :city => haunt[1].to_s, :state => state.to_s, :description => about[info.index(haunt)].to_s }
             end
         else
             if !haunt_hash[state]
-                haunt_hash[state] = [{ :name => haunt[0].to_s, :city => haunt[1].to_s, :state => state.to_s, :description => about[info.index(haunt)].to_s }]
+                haunt_hash[state] = [{ :name => haunt[0].to_s.lstrip, :city => haunt[1].to_s, :state => state.to_s, :description => about[info.index(haunt)].to_s }]
             else
-                haunt_hash[state] << { :name => haunt[0].to_s, :city => haunt[1].to_s, :state => state.to_s, :description => about[info.index(haunt)].to_s }
+                haunt_hash[state] << { :name => haunt[0].to_s.lstrip, :city => haunt[1].to_s, :state => state.to_s, :description => about[info.index(haunt)].to_s }
             end
         end
     end 
 
     haunt_hash
-    
-    # haunt_hash.each do |one, two|
-    #     two.each do |hash|
-    #         arr = []
-    #         desc = hash[:description].split(/\W+/)
-    #         activities.each do |key, values|
-    #             matches = desc & values
-    #             if matches.length > 0
-    #                 arr << key.to_s
-    #             end
-    #         end
-    #         exp = arr.uniq.join(" ")
-    #         Paranormal_Experience.find_or_create_by({ experience: "#{exp}" })
-    #     end
-    # end
 end
 
 def final_haunt_hash # creates a hash of every state and their haunts
-  hash = {}
+    hash = {}
 
-  href_arr.each do |state_href|
-    href = "#{state_href}"
-    merger = haunt_hasher(href) 
-    hash.merge!(merger)
-  end
-
-  hash
-end
-
-def state_arr # puts states into an array
-    arr = []
     href_arr.each do |state_href|
         href = "#{state_href}"
-
-        html = open("#{href}")
-        doc = Nokogiri::HTML(html)
-
-        state = doc.css(".entry-title").text.split(" ").last
-        arr << state
+        merger = haunt_hasher(href) 
+        hash.merge!(merger)
     end
-    arr
+
+    hash
 end
+
+def state_list # puts states into an array
+  arr = []
+  href_arr.each do |state_href|
+    state = state_name("#{state_href}")
+
+    if state == "TX" 
+      state = "Texas"
+    elsif state == "D.C." || state == "Island" || state == "Dakota" || state == "State"
+      state = arr[-2..-1].join(" ")
+    elsif state == "Virginia"
+      if arr[-2] == "West"
+        state = "West Virginia"
+      else
+          state = "Virginia"
+      end
+    end
+  end
+end
+
+  
