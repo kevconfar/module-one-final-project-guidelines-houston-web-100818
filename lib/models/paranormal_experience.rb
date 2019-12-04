@@ -11,8 +11,6 @@ class ParanormalExperience < ActiveRecord::Base
         h.name_location
     end
 
-  
- 
 
     def self.vis_array
         arr = []
