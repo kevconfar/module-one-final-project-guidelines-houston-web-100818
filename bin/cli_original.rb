@@ -11,10 +11,10 @@ $start_menu_choices = {
 }
 
 $type_of_haunting_menu_choices = { 
-  "Visual" => 1,
-  "Physical" => 2,
-  "Auditory" => 3,
-  "Back" => 4
+  "Visual" => 0,
+  "Physical" => 1,
+  "Auditory" => 2,
+  "Back" => 3
 }
 
 def messages(name=nil)
@@ -75,11 +75,9 @@ def launch_menu(menu_choice, message)
     $prompt.select(message, menu_choice)
 end
 
-def find_by_state(input)
-    input = gets.chomp
-end
+
   
-  def launch_first_menu(name=nil)
+def launch_first_menu(name=nil)
     start_choice = launch_menu($start_menu_choices, messages(name)[:start])
   
     case start_choice
@@ -90,8 +88,6 @@ end
             end
         end
         haunt_choice = Haunt.find_by(name: haunt_name)
-        # review_printer("\n\nHaunt: #{haunt_choice.name}\nCity: #{haunt_choice.city}\nState: #{haunt_choice.state}\nDescription:\n#{haunt_choice.description}\n* * *  * * *  * * *  * * *  * * *  * * *  * * *")
-        # launch_first_menu
         haunt_printer(haunt_choice)
         launch_first_menu
     when 1
@@ -102,71 +98,52 @@ end
         end
         location_choice = Haunt.find_by_id(location_name)
         haunt_printer(location_choice)
-        # review_printer("\n\nHaunt: #{haunt_choice.name}\nCity: #{haunt_choice.city}\nState: #{haunt_choice.state}\nDescription:\n#{haunt_choice.description}\n* * *  * * *  * * *  * * *  * * *  * * *  * * *")
         launch_first_menu
     when 2
-        # type_of_haunting_choice = launch_menu($type_of_haunting_menu_choices, messages[:type_of_haunting])
-        # launch_type_of_haunting_menu(type_of_haunting_choice)
-        experience_type = $prompt.select(messages[:location_search], filter: true) do |options|
-            ParanormalExperience.all.collect do |h|
-                options.choice h, -> { "#{h.id.to_i}"}
-            end
-        end
-        location_choice = Haunt.find_by_id(location_name)
-        haunt_printer(location_choice)
-        # review_printer("\n\nHaunt: #{haunt_choice.name}\nCity: #{haunt_choice.city}\nState: #{haunt_choice.state}\nDescription:\n#{haunt_choice.description}\n* * *  * * *  * * *  * * *  * * *  * * *  * * *")
-        launch_first_menu
+        type_of_haunting_choice = launch_menu($type_of_haunting_menu_choices, messages[:type_of_haunting])
+        launch_type_of_haunting_menu(type_of_haunting_choice)
     when 3
         exit
     end
 end
 
 
-# def haunt_by_state(input)
-#     Haunt.all.collect.where(state: "#{input}")
-# end
- 
 
+def launch_type_of_haunting_menu(type_of_haunting_choice)
+    case type_of_haunting_choice
+    when 0
+    activity = $prompt.select(messages[:type_of_haunting], filter: true) do |options|
+        ParanormalExperience.vis_array.each do |par_exp|
+            options.choice par_exp.haunt_by_experience, -> { "#{par_exp.id.to_i}"}
+        end
+    end
+    choice = Haunt.find_by_id(activity)
+    haunt_printer(choice)
+    launch_first_menu
+    when 1
+    activity = $prompt.select(messages[:type_of_haunting], filter: true) do |options|
+        ParanormalExperience.aud_array.each do |par_exp|
+            options.choice par_exp.haunt_by_experience, -> { "#{par_exp.id.to_i}"}
+        end
+    end
+    choice = Haunt.find_by_id(activity)
+    haunt_printer(choice)
+    launch_first_menu
+    when 2
+    activity = $prompt.select(messages[:type_of_haunting], filter: true) do |options|
+        ParanormalExperience.phys_array.each do |par_exp|
+            options.choice par_exp.haunt_by_experience, -> { "#{par_exp.id.to_i}"}
+        end
+    end
+    choice = Haunt.find_by_id(activity)
+    haunt_printer(choice)
+    launch_first_menu
+    when 3
+    launch_first_menu
+    end
 
-  # def launch_type_of_haunting_menu(type_of_haunting_choice)
-  #     case type_of_haunting_choice
-  #     when 0
-  #       visual_type = $prompt.select(messages[:type_of_haunting], filter: true) do |options|
-  #         Paranormal_Experience.all.collect do |description|
-  #           description.each do |word|
-  #             if word.includes?("orbs") || word.includes?("shadow") || word.includes?("figure") || word.includes?("lights") || word.includes?("items moving") || word.includes?("apparition")
-  #               options.choice visual.description
-  #        # Haunt.all.collect do |description|
-  #         #  options.choice description.visual
-  #             end
-  #           end
-      
-  #       visual_choice = Paranormal_Experience.find_by(description: visual_type).haunts.order("name")
-  #       visual_haunting_printer(visual_type) 
-  #       launch_first_menu
-  #     when 1
-  #       auditory_haunting_printer(Paranormal_Experience.type_of_haunting_hash)
-  #       launch_first_menu
-  #     when 2
-  #       physical_haunting_printer(Paranormal_Experience.type_of_haunting_hash)
-  #       launch_first_menu
-  #     when 3
-  #       launch_first_menu
-  #     end
+end
 
-  # end
-
-  # def physical_haunting_printer(type_of_haunting_hash)
-  #     type_of_haunting_hash.each do | physical |
-  #       message = "\nName: #{haunt[:name]}\nPlace: #{haunt[:state]}\nReview:\n#{review[:review]}\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
-  #       review_printer(message)
-  #     end
-  # end
-
-  # def auditory_haunting_printer
-  # end
-  # def visual_haunting_printer
-  # end
 
 def haunt_printer(haunt)
     separate = "* * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * * * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *"
@@ -176,18 +153,6 @@ def haunt_printer(haunt)
     review_printer(message)
 end
   
-def location_search_printer(state)
-    puts "\nState: #{state}"
-    puts "\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
-    Haunt.all.each do |haunt|
-        if haunt.state == "#{state}"
-            message = "\nName:\n#{haunt.name},\nCity:\n#{haunt.city},\n\nDescription:\n#{haunt.description}\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
-            review_printer(message)
-        end
-    end
-
-end
-
 def review_printer(message)
     next_or_back = $prompt.select(message, response_choices[:next_or_back_choices])
     if next_or_back == "Back"
