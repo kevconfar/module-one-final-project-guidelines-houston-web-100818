@@ -11,7 +11,7 @@ class ParanormalExperience < ActiveRecord::Base
         h.name_location
     end
 
-    # def self.vis
+  
  
 
     def self.vis_array

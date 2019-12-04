@@ -75,11 +75,9 @@ def launch_menu(menu_choice, message)
     $prompt.select(message, menu_choice)
 end
 
-def find_by_state(input)
-    input = gets.chomp
-end
+
   
-  def launch_first_menu(name=nil)
+def launch_first_menu(name=nil)
     start_choice = launch_menu($start_menu_choices, messages(name)[:start])
   
     case start_choice
@@ -90,8 +88,6 @@ end
             end
         end
         haunt_choice = Haunt.find_by(name: haunt_name)
-        # review_printer("\n\nHaunt: #{haunt_choice.name}\nCity: #{haunt_choice.city}\nState: #{haunt_choice.state}\nDescription:\n#{haunt_choice.description}\n* * *  * * *  * * *  * * *  * * *  * * *  * * *")
-        # launch_first_menu
         haunt_printer(haunt_choice)
         launch_first_menu
     when 1
@@ -102,35 +98,16 @@ end
         end
         location_choice = Haunt.find_by_id(location_name)
         haunt_printer(location_choice)
-        # review_printer("\n\nHaunt: #{haunt_choice.name}\nCity: #{haunt_choice.city}\nState: #{haunt_choice.state}\nDescription:\n#{haunt_choice.description}\n* * *  * * *  * * *  * * *  * * *  * * *  * * *")
         launch_first_menu
     when 2
         type_of_haunting_choice = launch_menu($type_of_haunting_menu_choices, messages[:type_of_haunting])
         launch_type_of_haunting_menu(type_of_haunting_choice)
-
-        # visual_type = $prompt.select(messages[:location_search], filter: true) do |options|
-        #     ParanormalExperience.all.collect do |par_exp| 
-        #         options.choice par_exp.final_solution, -> { "#{par_exp.id.to_i}"}
-        #     end
-        # end
-
-        # #  ParanormalExperience.all.collect do |par_exp|
-        # #     options.choice par_exp.final_solution, -> { "#{par_exp.id.to_i}"}
-
-        # location_choice = Haunt.find_by_id(location_name)
-        # haunt_printer(location_choice)
-        # # review_printer("\n\nHaunt: #{haunt_choice.name}\nCity: #{haunt_choice.city}\nState: #{haunt_choice.state}\nDescription:\n#{haunt_choice.description}\n* * *  * * *  * * *  * * *  * * *  * * *  * * *")
-        # launch_first_menu
     when 3
         exit
     end
 end
 
 
-# def haunt_by_state(input)
-#     Haunt.all.collect.where(state: "#{input}")
-# end
- 
 
 def launch_type_of_haunting_menu(type_of_haunting_choice)
     case type_of_haunting_choice
@@ -166,7 +143,6 @@ def launch_type_of_haunting_menu(type_of_haunting_choice)
     end
 
 end
-
 
 
 def haunt_printer(haunt)
