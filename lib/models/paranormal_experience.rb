@@ -6,15 +6,45 @@ class ParanormalExperience < ActiveRecord::Base
 
     def haunt_by_experience
         line = " -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-"
+        num = self.id.to_i
+        h = Haunt.find_by_id(num)
+        h.name_location
+    end
+
+    # def self.vis
+ 
+
+    def self.vis_array
         arr = []
-        Haunt.all.collect do |haunt|
-            if haunt.id.to_i == self.id.to_i
-                arr << "\nNAME:  #{haunt.name}\nLOCATION:  #{haunt.city}, #{haunt.state}\nABOUT: \n#{haunt.description}\n\n\n#{line}"
+        ParanormalExperience.all.collect do |exp|
+            if exp.experience.include? "visual"
+                arr << exp
+            end
+        end
+        arr
+    end
+
+    def self.aud_array
+        arr = []
+        ParanormalExperience.all.collect do |exp|
+            if exp.experience.include? "auditory"
+                arr << exp
+            end
+        end
+        arr
+    end
+
+    def self.phys_array
+        arr = []
+        ParanormalExperience.all.collect do |exp|
+            if exp.experience.include? "physical"
+                arr << exp
             end
         end
         arr
     end
 
 
-  
+        
+
 end

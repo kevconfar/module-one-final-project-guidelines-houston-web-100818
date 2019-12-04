@@ -8,3 +8,5 @@ require_relative '../config/environment'
 
 # puts y.location_of_haunt
 
+# # puts visual_haunts
+
