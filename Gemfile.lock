@@ -72,7 +72,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord
+  activerecord (~> 5.2, >= 5.2.3)
   nokogiri
   pry
   rake
