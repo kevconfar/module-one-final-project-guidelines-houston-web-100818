@@ -143,19 +143,8 @@ end
 def state_list # puts states into an array
   arr = []
   href_arr.each do |state_href|
-    state = state_name("#{state_href}")
-
-    if state == "TX" 
-      state = "Texas"
-    elsif state == "D.C." || state == "Island" || state == "Dakota" || state == "State"
-      state = arr[-2..-1].join(" ")
-    elsif state == "Virginia"
-      if arr[-2] == "West"
-        state = "West Virginia"
-      else
-          state = "Virginia"
-      end
-    end
+    state = state_name("#{state_href}").lstrip
+    arr << state.to_s
   end
 end
 
