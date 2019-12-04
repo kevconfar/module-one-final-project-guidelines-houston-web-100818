@@ -4,6 +4,7 @@ require_relative '../config/environment'
 
 # puts x.haunt_by_experience
 
-y = Haunt.last
+# y = Haunt.last
 
-puts y.location_of_haunt
+# puts y.location_of_haunt
+

@@ -3,9 +3,14 @@ class Haunt < ActiveRecord::Base
     has_many :paranormal_experiences
     # has_many :ghost_hunters, through: :paranormal_experiences
 
-    def location_of_haunt
+    # def location_of_haunt
+    #     line = " -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-"
+    #     "\n           NAME: #{self.name} | LOCATION: #{self.city}, #{self.state}\n\n #{self.description}\n\n\n#{line}\n\n"
+    # end
+
+     def location_of_haunt
         line = " -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-"
-        "\n           NAME: #{self.name} | LOCATION: #{self.city}, #{self.state}\n\n #{self.description}\n\n\n#{line}\n\n"
+        "\nNAME: #{self.name} | LOCATION: #{self.city}, #{self.state}\n#{line}\n"
     end
 
     # def haunt_by_experience
@@ -19,14 +24,9 @@ class Haunt < ActiveRecord::Base
     #     arr
     # end
 
-    def haunt_state
-        Haunt.all.where(state:)
+    def haunts_by_state
+
     end
-
-
-
-
-
 
 
 

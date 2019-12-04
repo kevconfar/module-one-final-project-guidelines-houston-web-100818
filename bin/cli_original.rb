@@ -92,21 +92,30 @@ end
         haunt_choice = Haunt.find_by(name: haunt_name)
         # review_printer("\n\nHaunt: #{haunt_choice.name}\nCity: #{haunt_choice.city}\nState: #{haunt_choice.state}\nDescription:\n#{haunt_choice.description}\n* * *  * * *  * * *  * * *  * * *  * * *  * * *")
         # launch_first_menu
-        haunt_search_printer(haunt_choice)
+        haunt_printer(haunt_choice)
         launch_first_menu
     when 1
         location_name = $prompt.select(messages[:location_search], filter: true) do |options|
             Haunt.all.collect do |h|
-                options.choice h.location_of_haunt
+                options.choice h.location_of_haunt, -> { "#{h.id.to_i}"}
             end
         end
-        haunt_choice = Haunt.find_by(state: "#{location_name}")
-        review_printer(haunt_choice)
+        location_choice = Haunt.find_by_id(location_name)
+        haunt_printer(location_choice)
         # review_printer("\n\nHaunt: #{haunt_choice.name}\nCity: #{haunt_choice.city}\nState: #{haunt_choice.state}\nDescription:\n#{haunt_choice.description}\n* * *  * * *  * * *  * * *  * * *  * * *  * * *")
         launch_first_menu
     when 2
-        type_of_haunting_choice = launch_menu($type_of_haunting_menu_choices, messages[:type_of_haunting])
-        launch_type_of_haunting_menu(type_of_haunting_choice)
+        # type_of_haunting_choice = launch_menu($type_of_haunting_menu_choices, messages[:type_of_haunting])
+        # launch_type_of_haunting_menu(type_of_haunting_choice)
+        experience_type = $prompt.select(messages[:location_search], filter: true) do |options|
+            ParanormalExperience.all.collect do |h|
+                options.choice h, -> { "#{h.id.to_i}"}
+            end
+        end
+        location_choice = Haunt.find_by_id(location_name)
+        haunt_printer(location_choice)
+        # review_printer("\n\nHaunt: #{haunt_choice.name}\nCity: #{haunt_choice.city}\nState: #{haunt_choice.state}\nDescription:\n#{haunt_choice.description}\n* * *  * * *  * * *  * * *  * * *  * * *  * * *")
+        launch_first_menu
     when 3
         exit
     end
@@ -159,9 +168,10 @@ end
   # def visual_haunting_printer
   # end
 
-def haunt_search_printer(haunt)
+def haunt_printer(haunt)
+    separate = "* * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * * * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *"
     puts "\nHaunt: #{haunt.name}"
-    puts "\nCity:\n#{haunt.city},\nState:\n#{haunt.state},\nDescription:\n#{haunt.description}\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
+    puts "\nLocation: #{haunt.city}, #{haunt.state}\n\nDescription:\n #{haunt.description}\n\n#{separate}\n#{separate}\n\n"
     message = nil
     review_printer(message)
 end
@@ -171,10 +181,11 @@ def location_search_printer(state)
     puts "\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
     Haunt.all.each do |haunt|
         if haunt.state == "#{state}"
-            message = "\nName:\n#{haunt.name},\nCity:\n#{haunt.city},\nDescription:\n#{haunt.description}\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
+            message = "\nName:\n#{haunt.name},\nCity:\n#{haunt.city},\n\nDescription:\n#{haunt.description}\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
             review_printer(message)
         end
     end
+
 end
 
 def review_printer(message)
