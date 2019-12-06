@@ -156,7 +156,6 @@ def haunt_printer(haunt)
 end
   
 
-breaker = "*** ~-~-~ =><= =><= ~-~-~ ***|*** ~-~-~ =><= =><= ~-~-~ ***|*** ~-~-~ =><==><= ~-~-~ ***|*** ~-~-~ =><= =><= ~-~-~ ***|*** ~-~-~ =><= =><= ~-~-~ ***|*** ~-~-~ =><= =><= ~-~-~ ***"
 def review_printer(message)
     next_or_back = $prompt.select(message, response_choices[:next_or_back_choices])
     if next_or_back == "Back"
