@@ -82,7 +82,7 @@ def launch_first_menu(name=nil)
   
     case start_choice
     when 0
-        haunt_name = $prompt.select(messages[:haunt_search], filter: true) do |options|
+        haunt_name = $prompt.select(messages[:haunt_search], filter: true) do |options| #, per_page: 7, max: 3
             Haunt.all.collect do |haunt|
                 options.choice haunt.name
             end
@@ -146,13 +146,16 @@ end
 
 
 def haunt_printer(haunt)
-    separate = "* * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * * * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *"
-    puts "\nHaunt: #{haunt.name}"
-    puts "\nLocation: #{haunt.city}, #{haunt.state}\n\nDescription:\n #{haunt.description}\n\n#{separate}\n#{separate}\n\n"
+    line = " -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-"
+    breaker = "*** ~-~-~ =><= =><= ~-~-~ ***|*** ~-~-~ =><= =><= ~-~-~ ***|*** ~-~-~ =><==><= ~-~-~ ***|*** ~-~-~ =><= =><= ~-~-~ ***|*** ~-~-~ =><= =><= ~-~-~ ***"
+    divider = "=><= =><==><= =><==><= =><==><= =><==><= =><==><= =><==><= =><==><= =><==><= =><==><= =><==><= =><==><= =><==><= =><==><= =><==><= =><==><= =><==><= =><="
+    separate = "* * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *  * * *"
+    puts haunt.haunt_info
     message = nil
     review_printer(message)
 end
   
+
 def review_printer(message)
     next_or_back = $prompt.select(message, response_choices[:next_or_back_choices])
     if next_or_back == "Back"
